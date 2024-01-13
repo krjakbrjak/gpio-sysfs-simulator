@@ -15,3 +15,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     spdlog::spdlog
 )
 target_compile_definitions(${PROJECT_NAME} PUBLIC _FILE_OFFSET_BITS=64)
+
+install(TARGETS ${PROJECT_NAME})
