@@ -2,7 +2,7 @@
 
 #include "driver.h"
 #include <cstring>
-#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 #include <fuse3/fuse.h>
 #include <iostream>
 #include <mutex>
