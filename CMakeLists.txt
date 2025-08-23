@@ -10,6 +10,15 @@ ExternalProject_Add(spdlog
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
 )
 
+ExternalProject_Add(gtest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.17.0
+    GIT_PROGRESS true
+    CMAKE_ARGS
+        -DCMAKE_CXX_STANDARD=17
+        -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+)
+
 ExternalProject_Add(fuse3
     GIT_REPOSITORY https://github.com/libfuse/libfuse.git
     GIT_TAG fuse-3.17.4
@@ -24,8 +33,10 @@ ExternalProject_Add(gpio_sysfs_simulator
     DEPENDS
         spdlog
         fuse3
+        gtest
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gpio-sysfs-simulator
     CMAKE_COMMAND ${CMAKE_COMMAND} -E env PKG_CONFIG_PATH=${CMAKE_INSTALL_PREFIX}/lib/x86_64-linux-gnu/pkgconfig -- ${CMAKE_COMMAND}
+    TEST_COMMAND cd <BINARY_DIR> && ctest -V
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
 )

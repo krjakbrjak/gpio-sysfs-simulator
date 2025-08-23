@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.22.0)
 project(gpio-sysfs-simulator)
+enable_testing()
 
 message(STATUS $ENV{PKG_CONFIG_PATH})
 find_package(PkgConfig REQUIRED)
@@ -11,7 +12,6 @@ message(STATUS "FUSE_LIBRARY_DIRS: ${FUSE_LIBRARY_DIRS}")
 message(STATUS "FUSE_INCLUDE_DIRS: ${FUSE_INCLUDE_DIRS}")
 
 find_package(spdlog REQUIRED)
-
 
 set(CMAKE_CXX_STANDARD 17)
 add_executable(${PROJECT_NAME}
@@ -25,3 +25,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 target_compile_definitions(${PROJECT_NAME} PUBLIC _FILE_OFFSET_BITS=64)
 
 install(TARGETS ${PROJECT_NAME})
+
+find_package(GTest REQUIRED)
+add_executable(test_driver src/test_driver.cpp src/driver.cpp)
+target_link_libraries(test_driver GTest::gtest_main pthread)
+add_test(NAME test_driver COMMAND test_driver)
