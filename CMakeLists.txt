@@ -23,7 +23,7 @@ ExternalProject_Add(fuse3
     GIT_REPOSITORY https://github.com/libfuse/libfuse.git
     GIT_TAG fuse-3.17.4
     GIT_PROGRESS true
-    CONFIGURE_COMMAND cd <BINARY_DIR> && meson setup <SOURCE_DIR> --prefix=${CMAKE_INSTALL_PREFIX} -Duseroot=false -Dudevrulesdir= -Dinitscriptdir= -Dexamples=false -Dtests=false --reconfigure
+    CONFIGURE_COMMAND cd <BINARY_DIR> && meson setup <SOURCE_DIR> --prefix=${CMAKE_INSTALL_PREFIX} -Duseroot=false -Dudevrulesdir=${CMAKE_INSTALL_PREFIX}/lib/udev/rules.d -Dinitscriptdir= -Dexamples=false -Dtests=false --reconfigure
     BUILD_COMMAND cd <BINARY_DIR> && ninja
     INSTALL_COMMAND cd <BINARY_DIR> && ninja install
     TEST_COMMAND ""
