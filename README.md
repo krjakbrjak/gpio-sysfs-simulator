@@ -1,53 +1,59 @@
+# ![status](https://github.com/krjakbrjak/gpio-sysfs-simulator/actions/workflows/build-tests.yml/badge.svg)
+
 # GPIO Sysfs Simulator with libfuse
 
 ## Overview
 
-This project implements a GPIO Sysfs simulator using the libfuse library in C++. The primary goal is to create a filesystem that mimics the behavior of the GPIO sysfs interface, allowing users to simulate GPIO pin interactions on a desktop environment. This is particularly useful for development, testing, and experimentation when the actual embedded device is not readily available.
+This project provides a GPIO Sysfs simulator implemented in C++ using the libfuse library. It creates a user-space filesystem that emulates the Linux GPIO sysfs interface, allowing you to simulate GPIO pin operations on a desktop or development machine. This is especially useful for development, testing, and experimentation when you do not have access to actual embedded hardware.
 
 ## Features
 
-* Filesystem Hooks: The simulator implements five essential filesystem hooks:
-  * getattr: Retrieve file attributes.
-  * readdir: List directory contents.
-  * read: Read from files.
-  * write: Write to files.
-  * poll: Send notifications to the kernel when files are modified.
+- **Filesystem Operations:** Implements the key filesystem operations required for GPIO sysfs simulation:
+  - `getattr`: Retrieve file and directory attributes.
+  - `readdir`: List the contents of directories.
+  - `read`: Read data from files.
+  - `write`: Write data to files.
+  - `poll`: Notify the kernel when files are modified, enabling event-driven monitoring.
 
-* Asynchronous Monitoring: Clients can use the epoll system call to asynchronously monitor the state of simulated pins. Notifications are sent to the kernel whenever files (such as value and direction) are modified, allowing for real-time monitoring.
+- **Asynchronous Monitoring:** Supports asynchronous monitoring of pin states using the `epoll` system call. When files such as `value` or `direction` are modified, the kernel is notified, allowing clients to react in real time.
 
-* Dynamic Pin Management: When a pin number is written to `/export`, new entries are automatically added to the simulated filesystem, replicating the behavior of the kernel. Conversely, writing a pin number to `/unexport` removes the corresponding entries.
+- **Dynamic Pin Management:** Writing a pin number to `/export` creates new entries in the simulated filesystem, mimicking the behavior of the Linux kernel. Writing a pin number to `/unexport` removes those entries.
 
 ## Getting Started
 
-### Install Dependencies:
+### Prerequisites
 
-Ensure that libfuse is installed on your system.
+- C++ compiler
+- CMake
+- Meson (required for building libfuse)
 
-```bash
-# Example on Debian-based systems
-sudo apt-get install fuse3 libfuse3-dev
+Install Meson and Ninja (example for Debian-based systems):
+
+```sh
+sudo apt install ninja-build meson
 ```
 
-### Build the Project:
+### Build the Project
 
-```bash
-cmake -B build -S .
-cmake --build build
+```sh
+cmake -B build -S . -DCMAKE_INSTALL_PREFIX=$(pwd)/build/INSTALLDIR
+cmake --build build --parallel
 ```
 
-### Run the Simulator:
+### Run the Simulator
 
-```bash
-./gpio-sysfs-simulator <mount-point>
+```sh
+export LD_LIBRARY_PATH=$(pwd)/build/INSTALLDIR/lib/x86_64-linux-gnu
+$(pwd)/build/INSTALLDIR/bin/gpio-sysfs-simulator <mount-point>
 ```
 
-Replace <mount-point> with the desired mount point for the simulated GPIO sysfs.
+This command mounts the simulated GPIO sysfs filesystem at `<mount-point>`. You can then use standard sysfs operations to export/unexport pins and manipulate their state.
 
-### Examples
+## Examples
 
-* Asynchronous Monitoring:
-Use the [client.py](./examples/client.py) (or epoll system call in your client code) to monitor changes in the simulated GPIO sysfs.
+**Asynchronous Monitoring:**  
+Use the provided [client.py](./examples/client.py) script or your own code with `epoll` to monitor changes in the simulated GPIO sysfs:
 
-```bash
+```sh
 python examples/client.py --pins 1 2 3 4 -m <mount-point>
 ```

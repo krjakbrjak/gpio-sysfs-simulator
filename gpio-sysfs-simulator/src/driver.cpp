@@ -3,7 +3,6 @@
 #include <cctype>
 #include <cstdlib>
 #include <filesystem>
-#include <fmt/format.h>
 #include <fstream>
 #include <iostream>
 #include <locale>
